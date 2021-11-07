@@ -1,0 +1,15 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: pet-store
+  region: us-west-2
+
+iam:
+  withOIDC: true
+
+nodeGroups:
+  - name: ng-general
+    instanceType: t2.small
+    instanceName: pet-store-node
+    desiredCapacity: 1
