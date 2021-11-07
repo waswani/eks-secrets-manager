@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pet-store-deployment
+  labels:
+    app: pet-store
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pet-store
+  template:
+    metadata:
+      labels:
+        app: pet-store
+    spec:
+      serviceAccountName: pet-store-service-account
+      volumes:
+      - name: pet-store-db-secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: pet-store-db-credentials
+      containers:
+      - name: pet-store
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: pet-store-db-secrets
+          mountPath: "/mnt/db/secrets"
+          readOnly: true
